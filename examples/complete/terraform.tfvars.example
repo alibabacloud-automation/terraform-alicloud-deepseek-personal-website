@@ -1,0 +1,58 @@
+# Required variables
+instance_password = "YourSecurePassword123!"
+bailian_api_key   = "your-bailian-api-key"
+
+# Optional variables (you can customize these)
+region         = "cn-hangzhou"
+instance_type  = "ecs.e-c1m1.large"
+
+# VPC configuration
+vpc_cidr_block = "192.168.0.0/16"
+vpc_name       = "deepseek-vpc"
+
+# VSwitch configuration  
+vswitch_cidr_block = "192.168.0.0/24"
+# zone_id = "cn-hangzhou-f"  # Optional, will auto-select if not specified
+vswitch_name = "deepseek-vswitch"
+
+# Security Group configuration
+security_group_name        = "deepseek-sg"
+security_group_description = "Security group for DeepSeek AI website"
+
+# Security Group Rules configuration (list of objects)
+security_group_rule_config = [
+  {
+    type        = "ingress"
+    ip_protocol = "tcp"
+    nic_type    = "intranet"
+    policy      = "accept"
+    port_range  = "8080/8080"
+    priority    = 1
+    cidr_ip     = "0.0.0.0/0"
+  },
+  {
+    type        = "ingress"
+    ip_protocol = "tcp"
+    nic_type    = "intranet"
+    policy      = "accept"
+    port_range  = "443/443"
+    priority    = 2
+    cidr_ip     = "0.0.0.0/0"
+  }
+]
+
+# ECS Instance configuration
+image_id                   = "aliyun_3_x64_20G_alibase_20250117.vhd"
+instance_name              = "deepseek-ecs"
+system_disk_category       = "cloud_essd"
+internet_max_bandwidth_out = 10
+
+# RAM User configuration
+ram_user_name = "deepseek-ram-user"
+
+# ECS Command configuration
+ecs_command_name        = "install-deepseek-app"
+ecs_command_working_dir = "/root"
+ecs_command_type        = "RunShellScript"
+ecs_command_timeout     = 3600
+ecs_invocation_timeout  = "15m"
