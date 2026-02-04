@@ -8,31 +8,15 @@ This example demonstrates how to use the `ecs-and-deepseek-build-personal-websit
    ```bash
    cd examples/complete
    ```
-
-2. Copy the example configuration file:
-   ```bash
-   cp terraform.tfvars.example terraform.tfvars
-   ```
-
-3. Edit the `terraform.tfvars` file and provide the required values:
-   ```hcl
-   # Required variables
-   instance_password = "YourSecurePassword123!"
-   bailian_api_key  = "your-bailian-api-key"
-
-   # Optional variables (you can customize these)
-   region         = "cn-hangzhou"
-   instance_type  = "ecs.e-c1m1.large"
-   ```
-
-4. Initialize and apply the Terraform configuration:
+   
+2. Initialize and apply the Terraform configuration:
    ```bash
    terraform init
    terraform plan
    terraform apply
    ```
 
-5. After deployment, you can access your DeepSeek AI website using the URL provided in the output `demo_url`.
+3. After deployment, you can access your DeepSeek AI website using the URL provided in the output `demo_url`.
 
 ## Prerequisites
 

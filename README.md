@@ -1,30 +1,11 @@
-# Alibaba Cloud DeepSeek AI Personal Website Terraform Module
+Alibaba Cloud DeepSeek AI Personal Website Terraform Module
 
-================================================ 
+# terraform-alicloud-deepseek-personal-website
 
-terraform-alicloud-deepseek-personal-website
+English | [简体中文](https://github.com/alibabacloud-automation/terraform-alicloud-deepseek-personal-website/blob/main/README-CN.md)
 
-English | [简体中文](https://github.com/terraform-alicloud-modules/terraform-alicloud-deepseek-personal-website/blob/master/README-CN.md)
+This example is used to implement solution [ECS and Deepseek Build Personal Website](https://www.aliyun.com/solution/tech-solution/ecs-and-deepseek-build-personal-website), which involves the creation and deployment of resources such as Virtual Private Cloud (VPC), VSwitch, Elastic Compute Service (ECS), and RAM users. This Terraform module creates a complete infrastructure solution for deploying a DeepSeek AI personal website on Alibaba Cloud, provisioning all necessary resources including VPC, ECS instance, security groups, and automatically installing and configuring the DeepSeek AI application. Our development process leverages specialized automation tools and agents to ensure consistent, reliable deployments and maintain best practices across all infrastructure components.
 
-Terraform module which creates a complete infrastructure solution for deploying a DeepSeek AI personal website on Alibaba Cloud. This module provisions all necessary resources including VPC, ECS instance, security groups, and automatically installs and configures the DeepSeek AI application.
-
-## Architecture
-
-This module creates a complete infrastructure stack for hosting a DeepSeek AI personal website with the following components:
-
-- **VPC**: Virtual Private Cloud for network isolation
-- **VSwitch**: Virtual switch within the VPC for subnet management
-- **Security Group**: Network security rules allowing HTTP traffic on port 8080
-- **ECS Instance**: Elastic Compute Service instance to host the DeepSeek AI application
-- **RAM User**: Resource Access Management user for the solution
-- **ECS Command & Invocation**: Automated installation and configuration of the DeepSeek AI application
-
-## Prerequisites
-
-- Alibaba Cloud account with appropriate permissions
-- Bailian API key (obtain from [Alibaba Cloud Model Studio](https://help.aliyun.com/zh/model-studio/developer-reference/get-api-key))
-- Terraform >= 1.0
-- Alibaba Cloud Terraform Provider >= 1.212.0
 
 ## Usage
 
@@ -44,7 +25,7 @@ module "deepseek_website" {
   vswitch_config = {
     cidr_block   = "192.168.0.0/24"
     zone_id      = "cn-hangzhou-f"
-    vswitch_name = "deepseek-vswitch"
+    vswitch_name = "deepseek-vsw"
   }
 
   # Security group configuration
@@ -53,8 +34,8 @@ module "deepseek_website" {
     description         = "Security group for DeepSeek AI website"
   }
 
-  # Security group rule configuration
-  security_group_rule_config = {
+  # Security group rule configuration (list of objects)
+  security_group_rule_config = [{
     type        = "ingress"
     ip_protocol = "tcp"
     nic_type    = "intranet"
@@ -62,7 +43,7 @@ module "deepseek_website" {
     port_range  = "8080/8080"
     priority    = 1
     cidr_ip     = "0.0.0.0/0"
-  }
+  }]
 
   # ECS instance configuration
   instance_config = {
@@ -94,6 +75,9 @@ module "deepseek_website" {
 
   # DeepSeek AI configuration
   bailian_api_key = "your-bailian-api-key"
+
+  # Optional custom installation script
+  # custom_install_script = "your-custom-install-script-here"
 }
 ```
 
@@ -101,18 +85,6 @@ module "deepseek_website" {
 
 * [Complete Example](https://github.com/alibabacloud-automation/terraform-alicloud-deepseek-personal-website/tree/main/examples/complete)
 
-## Requirements
-
-| Name | Version |
-|------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.0 |
-| <a name="requirement_alicloud"></a> [alicloud](#requirement\_alicloud) | >= 1.212.0 |
-
-## Providers
-
-| Name | Version |
-|------|---------|
-| <a name="provider_alicloud"></a> [alicloud](#provider\_alicloud) | >= 1.212.0 |
 
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
@@ -178,22 +150,6 @@ No modules.
 | <a name="output_vswitch_cidr_block"></a> [vswitch\_cidr\_block](#output\_vswitch\_cidr\_block) | The CIDR block of the VSwitch |
 | <a name="output_vswitch_id"></a> [vswitch\_id](#output\_vswitch\_id) | The ID of the VSwitch |
 <!-- END_TF_DOCS -->
-
-## Important Notes
-
-- The ECS instance password must be 8-30 characters and contain uppercase letters, lowercase letters, numbers, and special characters
-- The Bailian API key is required for the DeepSeek AI service to function
-- The installation script is stored in a local variable and will be automatically executed after the ECS instance is created
-- It may take several minutes for the application to be fully installed and ready
-- The application will be available on port 8080 of your ECS instance's public IP
-- A custom install script can be provided via the `custom_install_script` variable to override the default installation
-
-## Security Considerations
-
-- The security group is configured to allow inbound traffic on port 8080 from any IP (0.0.0.0/0)
-- Consider restricting the CIDR block to specific IP ranges for production environments
-- Use strong passwords for ECS instances
-- Keep your Bailian API key secure and do not commit it to version control
 
 ## Submit Issues
 

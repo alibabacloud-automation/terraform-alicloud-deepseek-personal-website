@@ -1,30 +1,10 @@
-# 阿里云 DeepSeek AI 个人网站 Terraform 模块
+阿里云 DeepSeek AI 个人网站 Terraform 模块
 
-================================================ 
+# terraform-alicloud-deepseek-personal-website
 
-terraform-alicloud-deepseek-personal-website
+[English](https://github.com/alibabacloud-automation/terraform-alicloud-deepseek-personal-website/blob/main/README.md) | 简体中文
 
-[English](https://github.com/terraform-alicloud-modules/terraform-alicloud-deepseek-personal-website/blob/master/README.md) | 简体中文
-
-用于在阿里云上部署 DeepSeek AI 个人网站的完整基础设施解决方案的 Terraform 模块。该模块提供所有必要的资源，包括 VPC、ECS 实例、安全组，并自动安装和配置 DeepSeek AI 应用程序。
-
-## 架构说明
-
-该模块创建用于托管 DeepSeek AI 个人网站的完整基础设施堆栈，包含以下组件：
-
-- **VPC**: 用于网络隔离的专有网络
-- **交换机**: VPC 内的虚拟交换机，用于子网管理
-- **安全组**: 网络安全规则，允许端口 8080 上的 HTTP 流量
-- **ECS 实例**: 用于托管 DeepSeek AI 应用程序的弹性计算服务实例
-- **RAM 用户**: 解决方案的资源访问管理用户
-- **ECS 命令和调用**: 自动化安装和配置 DeepSeek AI 应用程序
-
-## 前提条件
-
-- 具有适当权限的阿里云账户
-- 百炼 API 密钥（从[阿里云百炼平台](https://help.aliyun.com/zh/model-studio/developer-reference/get-api-key)获取）
-- Terraform >= 1.0
-- 阿里云 Terraform Provider >= 1.212.0
+本示例用于实现解决方案[低成本搭建 DeepSeek 专属 AI 网站](https://www.aliyun.com/solution/tech-solution/ecs-and-deepseek-build-personal-website)，涉及到专有网络（VPC）、交换机（VSwitch）、云服务器（ECS）、RAM 用户等资源的创建。这是一个用于在阿里云上部署 DeepSeek AI 个人网站的完整基础设施解决方案的 Terraform 模块，该模块提供所有必要的资源，包括 VPC、ECS 实例、安全组，并自动安装和配置 DeepSeek AI 应用程序。我们的开发过程利用了专门的自动化工具和代理，以确保跨所有基础设施组件的一致性、可靠部署并保持最佳实践。
 
 ## 使用方法
 
@@ -44,7 +24,7 @@ module "deepseek_website" {
   vswitch_config = {
     cidr_block   = "192.168.0.0/24"
     zone_id      = "cn-hangzhou-f"
-    vswitch_name = "deepseek-vswitch"
+    vswitch_name = "deepseek-vsw"
   }
 
   # 安全组配置
@@ -53,8 +33,8 @@ module "deepseek_website" {
     description         = "DeepSeek AI 网站的安全组"
   }
 
-  # 安全组规则配置
-  security_group_rule_config = {
+  # 安全组规则配置 (对象列表)
+  security_group_rule_config = [{
     type        = "ingress"
     ip_protocol = "tcp"
     nic_type    = "intranet"
@@ -62,7 +42,7 @@ module "deepseek_website" {
     port_range  = "8080/8080"
     priority    = 1
     cidr_ip     = "0.0.0.0/0"
-  }
+  }]
 
   # ECS 实例配置
   instance_config = {
@@ -94,25 +74,15 @@ module "deepseek_website" {
 
   # DeepSeek AI 配置
   bailian_api_key = "your-bailian-api-key"
+
+  # 可选的自定义安装脚本
+  # custom_install_script = "your-custom-install-script-here"
 }
 ```
 
 ## 示例
 
 * [完整示例](https://github.com/alibabacloud-automation/terraform-alicloud-deepseek-personal-website/tree/main/examples/complete)
-
-## 依赖要求
-
-| 名称 | 版本 |
-|------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.0 |
-| <a name="requirement_alicloud"></a> [alicloud](#requirement\_alicloud) | >= 1.212.0 |
-
-## 提供商
-
-| 名称 | 版本 |
-|------|---------|
-| <a name="provider_alicloud"></a> [alicloud](#provider\_alicloud) | >= 1.212.0 |
 
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
@@ -178,22 +148,6 @@ No modules.
 | <a name="output_vswitch_cidr_block"></a> [vswitch\_cidr\_block](#output\_vswitch\_cidr\_block) | The CIDR block of the VSwitch |
 | <a name="output_vswitch_id"></a> [vswitch\_id](#output\_vswitch\_id) | The ID of the VSwitch |
 <!-- END_TF_DOCS -->
-
-## 重要说明
-
-- ECS 实例密码必须为 8-30 个字符，包含大写字母、小写字母、数字和特殊字符
-- DeepSeek AI 服务需要百炼 API 密钥才能正常运行
-- 安装脚本存储在本地变量中，ECS 实例创建后将自动执行
-- 应用程序完全安装和准备就绪可能需要几分钟时间
-- 应用程序将在 ECS 实例公网 IP 的 8080 端口上提供服务
-- 可通过 `custom_install_script` 变量提供自定义安装脚本来覆盖默认安装
-
-## 安全注意事项
-
-- 安全组配置为允许来自任何 IP (0.0.0.0/0) 的端口 8080 入站流量
-- 在生产环境中，请考虑将 CIDR 块限制为特定的 IP 范围
-- 为 ECS 实例使用强密码
-- 保护您的百炼 API 密钥安全，不要将其提交到版本控制系统
 
 ## 提交问题
 
