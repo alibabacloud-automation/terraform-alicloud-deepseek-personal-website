@@ -4,9 +4,16 @@ provider "alicloud" {
 
 # Data sources to get available zones and instance types
 data "alicloud_zones" "available" {
-  available_instance_type     = var.instance_type
   available_disk_category     = var.system_disk_category
   available_resource_creation = "VSwitch"
+}
+
+# Select a currently available instance type in the chosen zone.
+data "alicloud_instance_types" "available" {
+  availability_zone = data.alicloud_zones.available.zones[0].id
+  cpu_core_count    = 2
+  memory_size       = 2
+  sorted_by         = "Price"
 }
 
 # Module usage
@@ -33,7 +40,7 @@ module "deepseek_website" {
 
   instance_config = {
     image_id                   = var.image_id
-    instance_type              = var.instance_type
+    instance_type              = data.alicloud_instance_types.available.instance_types[0].id
     password                   = var.ecs_instance_password
     instance_name              = var.instance_name
     system_disk_category       = var.system_disk_category
