@@ -69,12 +69,6 @@ variable "image_id" {
   default     = "aliyun_3_x64_20G_alibase_20250117.vhd"
 }
 
-variable "instance_type" {
-  type        = string
-  description = "The instance type for the ECS instance"
-  default     = "ecs.e-c1m1.large"
-}
-
 variable "ecs_instance_password" {
   type        = string
   description = "The password for the ECS instance (8-30 characters, must contain uppercase, lowercase, number and special character)"
